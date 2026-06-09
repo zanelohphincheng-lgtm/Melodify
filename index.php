@@ -1,4 +1,4 @@
-<?php
+span<?php
 session_start();
 $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
 
@@ -8,6 +8,17 @@ $stmt = $db->prepare($artist_query);
 $stmt->execute([]);
 $artists = $stmt->fetchAll();
 
+// Album data
+$album_query = "SELECT album.id, album.album_name, album.cover_image, artists.artist_name FROM album INNER JOIN artists ON album.artist_id = artists.id";
+$stmt = $db->prepare($album_query);
+$stmt->execute([]);
+$album = $stmt->fetchAll();
+
+// Feedback data
+$feedback_query = "SELECT id, username, feedback_content, submitted_at FROM feedback";
+$stmt = $db->prepare($feedback_query);
+$stmt->execute([]);
+$feedback = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -256,7 +267,7 @@ $artists = $stmt->fetchAll();
 
         <!-- Artist showcase -->
         <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Artists</h3>
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Artists <i class="bi bi-arrow-through-heart text-secondary small"></i></h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
             
             <!-- Render artist data -->
@@ -266,7 +277,6 @@ $artists = $stmt->fetchAll();
                         <img src="<?= $artist['artist_image'] ?>" class="avatar-circle mb-3" alt="Artist Profile">
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="m-0 fw-medium text-truncate small"><?= $artist['artist_name'] ?></p>
-                            <i class="bi bi-arrow-through-heart text-white small"></i>
                         </div>
                     </div>
                 </div>
@@ -277,29 +287,19 @@ $artists = $stmt->fetchAll();
 
         <!-- Album showcase -->
         <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Trending Albums</h3>
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Trending Albums <i class="bi bi-file-earmark-music text-secondary small"></i></h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
-                
+            
+            <!-- Render album data -->
+            <?php foreach ($album as $albums): ?>
                 <div class="col">
-                    <div class="card media-card h-100 p-3 glow-blue" onclick="window.location.href='album.php?id=1'">
-                        <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300&auto=format&fit=crop" class="album-art mb-3" alt="Album Cover">
-                        <p class="m-0 fw-medium text-truncate small">Short & Sweet</p>
-                        <span class="text-muted small" style="font-size: 0.8rem;">Sabrina C.</span>
+                    <div class="card media-card h-100 p-3 glow-blue" onclick="window.location.href='album.php?id=<?= $albums['id'] ?>'">
+                        <img src="<?= $albums['cover_image'] ?>" class="album-art mb-3" alt="Album Cover">
+                        <p class="m-0 fw-medium text-truncate small"><?= $albums['album_name'] ?></p>
+                        <p class="m-0 fw-medium text-truncate small"><?= $albums['artist_name'] ?></p>
                     </div>
                 </div>
-
-                <div class="col">
-                    <div class="card media-card h-100 p-3 glow-blue">
-                        <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=300&auto=format&fit=crop" class="album-art mb-3" alt="Album Cover">
-                        <p class="m-0 fw-medium text-truncate small">Soundscapes</p>
-                        <span class="text-muted small" style="font-size: 0.8rem;">Fictitious Art</span>
-                    </div>
-                </div>
-
-                <div class="col"><div class="card media-card h-100 p-3 glow-blue"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">Nervous Art</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-blue"><img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">The Twist</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-blue"><img src="https://images.unsplash.com/photo-1487180142328-054b783fc471?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">Flexibility</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-blue"><img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">The One One</p></div></div>
+            <?php endforeach; ?>
 
             </div>
         </section>
@@ -337,27 +337,19 @@ $artists = $stmt->fetchAll();
         <section class="mb-5">
             <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Feedback</h3>
             <div class="row g-3">
+
+                <?php foreach ($feedback as $feedbacks): ?>
                 <div class="col-md-6">
                     <div class="feedback-item">
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-person-circle me-2 text-info"></i>
-                            <span class="fw-medium small">MusicLover99</span>
+                            <span class="fw-medium small"><?= $feedbacks ['username'] ?></span>
                         </div>
-                        <p class="m-0 text-light opacity-75 small">The playlist interface is super smooth. Absolutely loving the glassmorphism aesthetic on dark mode!</p>
+                        <p class="m-0 text-light opacity-75 small"><?= $feedbacks ['feedback_content'] ?></p>
+                        <p class="m-0 text-end text-light opacity-75 small"><?= $feedbacks ['submitted_at'] ?></p>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="feedback-item">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="bi bi-person-circle me-2 text-warning"></i>
-                            <span class="fw-medium small">Audiophile_Steve</span>
-                        </div>
-                        <p class="m-0 text-light opacity-75 small">Incredible platform layout. Navigating between albums and finding separate single drops is seamless.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <a href="album.php" class="btn btn-danger btn-sm rounded-pill px-4">Album Test</a>
+                <?php endforeach; ?>
             </div>
         </section>
 
