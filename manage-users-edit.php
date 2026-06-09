@@ -1,11 +1,7 @@
 <?php
 session_start();
 
-// SECURITY GUARD: Only allow logged-in administrators
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != "admin") {
-    header("Location: index.php");
-    exit();
-}
+require("header.php")
 
 // Database Connection
 try {

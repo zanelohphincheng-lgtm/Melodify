@@ -2,32 +2,37 @@
 session_start();
 
 // Database Connection
-try {
-    $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root", "");
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database Connection Failed: " . $e->getMessage());
-}
+$db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
 
-// 1. Fetch the target album based on URL parameter ID
+
+// 1. Fetch album ID from the URL (e.g., album.php?id=1)
 $album_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if ($album_id <= 0) {
     die("Error: No valid album ID selected.");
 }
 
-// 2. Fetch Master Album Data
-$album_query = "SELECT * FROM album WHERE id = :id";
+// FIXED: Added artist_image to the SELECT query so PHP can find it!
+$album_query = "SELECT album_name, debut, cover_image, artist_image FROM album WHERE id = :id";
 $album_stmt = $db->prepare($album_query);
 $album_stmt->execute([':id' => $album_id]);
 $album = $album_stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$album) {
-    die("Error: Album not found in the database catalog.");
+    die("Error: Album not found.");
 }
 
-// 3. Fetch Child Tracks associated with this specific album
-$songs_query = "SELECT * FROM songs WHERE album_id = :album_id ORDER BY id ASC";
+$artist_query = "SELECT artist_name FROM artists WHERE id = :id";
+$artist_stmt = $db->prepare($artist_query);
+$artist_stmt->execute([':id' => $album_id]);
+$artist = $artist_stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$artist) {
+    die("Error: Name not found.");
+}
+
+// 3. Fetch Songs associated with this album using your exact column name: song_name
+$songs_query = "SELECT song_name,music_file, duration FROM songs WHERE album_id = :album_id ORDER BY id ASC";
 $songs_stmt = $db->prepare($songs_query);
 $songs_stmt->execute([':album_id' => $album_id]);
 $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,7 +42,7 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodify - <?= htmlspecialchars($album['title']); ?></title>
+    <title>Melodify - <?= htmlspecialchars($album['album_name']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -55,7 +60,6 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
             margin: 0 auto;
         }
 
-        /* Go Back Pill Component Button */
         .btn-pill-back {
             border-radius: 20px;
             padding: 6px 18px;
@@ -74,7 +78,6 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
         }
 
-        /* Album Master Header Layout Area */
         .album-header-deck {
             display: flex;
             align-items: flex-end;
@@ -117,13 +120,12 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .artist-avatar-mini {
-            width: 26px;
-            height: 26px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        /* Glassmorphic Tracklist Container Table Box */
         .tracklist-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(12px);
@@ -140,7 +142,6 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
             margin-bottom: 25px;
         }
 
-        /* Audio Track Table Presentation Design styling definitions */
         .track-table {
             width: 100%;
             border-collapse: collapse;
@@ -175,7 +176,6 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
             font-weight: 500;
         }
 
-        /* Responsive Breakpoint Rules for Mobile Views */
         @media (max-width: 768px) {
             .album-header-deck {
                 flex-direction: column;
@@ -190,6 +190,74 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
                 font-size: 2.5rem;
             }
         }
+        .audio-player-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(11, 15, 25, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 40px;
+            z-index: 9999;
+        }
+
+        .player-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .currently-playing {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 30%;
+        }
+
+        .player-mini-cover {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .control-icon {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .control-icon:hover {
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .play-main {
+            background: #ffffff;
+            color: #0b0f19;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .play-main:hover {
+            background: #3b82f6;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -203,27 +271,29 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <div class="album-header-deck">
-            <img src="upload/<?= htmlspecialchars($album['cover_image']); ?>" alt="Album Cover" class="album-cover">
+            <!-- Album Cover Output -->
+            <img src="<?= htmlspecialchars($album['cover_image']); ?>" alt="Album Cover" class="album-cover">
             
             <div>
                 <div class="brand-pill-mini">
                     <img src="upload/logo3.png" alt="Melodify Logo" width="24">
                     <span>Melodify</span>
                 </div>
-                <h1 class="album-display-title"><?= htmlspecialchars($album['title']); ?></h1>
+                <h1 class="album-display-title"><?= htmlspecialchars($album['album_name']); ?></h1>
                 
                 <div class="album-meta-details">
                     <span class="text-muted-custom">Debut :</span>
-                    <span><?= htmlspecialchars($album['debut_date']); ?></span>
+                    <span><?= htmlspecialchars($album['debut']); ?></span>
                     <span class="mx-1">•</span>
-                    <img src="upload/<?= htmlspecialchars($album['cover_image']); ?>" class="artist-avatar-mini" alt="Artist Profile">
-                    <span class="fw-bold text-info"><?= htmlspecialchars($album['artist']); ?></span>
+                    <!-- Fixed Avatar Image Tag -->
+                    <img src="<?= htmlspecialchars($album['artist_image']); ?>" class="artist-avatar-mini" alt="Artist Profile">
+                    <span class="fw-bold text-info"><?= htmlspecialchars($artist['artist_name']); ?></span>
                 </div>
             </div>
         </div>
 
         <div class="tracklist-card">
-            <div class="card-inner-title"><?= htmlspecialchars($album['title']); ?></div>
+            <div class="card-inner-title"><?= htmlspecialchars($album['album_name']); ?></div>
             
             <?php if (count($songs) > 0): ?>
                 <table class="track-table">
@@ -235,10 +305,13 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $index = 1; ?>
                         <?php foreach ($songs as $song): ?>
-                            <tr class="track-row">
-                                <td class="text-muted-custom ps-2"><?= htmlspecialchars($song['track_number']); ?></td>
-                                <td><?= htmlspecialchars($song['title']); ?></td>
+                            <tr class="track-row" 
+                                data-songname="<?= htmlspecialchars($song['song_name']); ?>" 
+                                data-audiofile="<?= htmlspecialchars($song['music_file']); ?>">
+                                <td class="text-muted-custom ps-2"><?= $index++; ?></td>
+                                <td><?= htmlspecialchars($song['song_name']); ?></td>
                                 <td class="text-end pe-2 text-muted-custom"><?= htmlspecialchars($song['duration']); ?></td>
                             </tr>
                         <?php endforeach; ?>
@@ -251,9 +324,85 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             <?php endif; ?>
         </div>
+        <div class="audio-player-bar">
+            <div class="player-content">
+                <div class="currently-playing">
+                    <img src="<?= htmlspecialchars($album['cover_image']); ?>" alt="Now Playing" class="player-mini-cover">
+                    <div>
+                        <h5 id="player-song-title" class="m-0 text-white">Select a track</h5>
+                        <small class="text-white"><?= htmlspecialchars($artist['artist_name']); ?></small>
+                    </div>
+                </div>
+
+                <div class="player-controls">
+                    <button id="btn-prev" class="control-icon"><i class="bi bi-skip-start-fill"></i></button>
+                    <button id="btn-play-toggle" class="control-icon play-main"><i class="bi bi-play-fill" id="play-icon"></i></button>
+                    <button id="btn-next" class="control-icon"><i class="bi bi-skip-end-fill"></i></button>
+                </div>
+
+                <div class="player-extra" style="width: 30%;"></div>
+            </div>
+        </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 1. Initialize the global audio engine variable
+        let currentAudio = null;
+        let isPlaying = false;
+
+        // 2. Select the UI interface elements
+        const playToggleBtn = document.getElementById('btn-play-toggle');
+        const playIcon = document.getElementById('play-icon');
+        const playerSongTitle = document.getElementById('player-song-title');
+
+        // 3. Add event listeners to all row selections
+        document.querySelectorAll('.track-row').forEach(row => {
+            row.addEventListener('click', function() {
+                const songName = this.getAttribute('data-songname');
+                const audioFile = this.getAttribute('data-audiofile');
+
+                // Safety fallback check if database record is missing a path
+                if (!audioFile) {
+                    alert("No audio file found for this track track!");
+                    return;
+                }
+
+                // 4. If a track is already playing, stop it completely first
+                if (currentAudio) {
+                    currentAudio.pause();
+                }
+
+                // 5. Instantiating a new core audio object with your path string
+                currentAudio = new Audio(audioFile);
+                
+                // Update the display text layout inside player panel
+                playerSongTitle.innerText = songName;
+                
+                // Play the track file resource
+                currentAudio.play();
+                isPlaying = true;
+                
+                // Update icons toggles to Bootstrap Pause icon symbol
+                playIcon.className = "bi bi-pause-fill";
+            });
+        });
+
+        // 6. Main Control Bar Center Toggle Button Interaction Rule
+        playToggleBtn.addEventListener('click', function() {
+            if (!currentAudio) return; // Do nothing if no song has been picked yet
+
+            if (isPlaying) {
+                currentAudio.pause();
+                playIcon.className = "bi bi-play-fill";
+                isPlaying = false;
+            } else {
+                currentAudio.play();
+                playIcon.className = "bi bi-pause-fill";
+                isPlaying = true;
+            }
+        });
+    </script>
 </body>
 </html>

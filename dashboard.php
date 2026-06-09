@@ -1,11 +1,8 @@
 <?php
 session_start();
 
-// SECURITY CHECK: Kick out anyone who isn't logged in OR isn't an Admin (role 1)
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != "admin") {
-    header("Location: index.php");
-    exit();
-}
+require("header.php")
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

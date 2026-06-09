@@ -1,12 +1,7 @@
 <?php
 session_start();
 
-// SECURITY GUARD: Ensure only logged-in administrators can view this control panel!
-// (Assuming role 1 = Admin, role 2 = User. Adjust according to your database values)
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != "admin") {
-    header("Location: index.php");
-    exit();
-}
+require("header.php")
 
 // Database Connection
 try {

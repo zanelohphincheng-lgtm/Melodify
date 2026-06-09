@@ -2,6 +2,12 @@
 session_start();
 $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
 
+// Load Artist data
+$artist_query = "SELECT id, artist_name, artist_image FROM artists";
+$stmt = $db->prepare($artist_query);
+$stmt->execute([]);
+$artists = $stmt->fetchAll();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -224,6 +230,7 @@ $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
                             <?php if(isset($_SESSION['user']['role']) && $_SESSION['user']['role'] == "admin"): ?>
                                 <li><a class="dropdown-menu-item dropdown-item py-2 dashboard-text" href="dashboard.php"><i class="bi bi-card-checklist me-2 dashboard-text"></i>Dashboard</a></li>
                             <?php endif; ?>
+                            <li><a class="dropdown-menu-item dropdown-item py-2" href="feedback.php"><i class="bi bi-envelope-paper-heart me-2 text-white"></i>Feedback</a></li>
                             <li><a class="dropdown-menu-item dropdown-item py-2" href="logout.php?logout=true"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Log Out</a></li>
                         </ul>
                     </div>
@@ -247,38 +254,28 @@ $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
             </div>
         </section>
 
+        <!-- Artist showcase -->
         <section class="mb-5">
             <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Artists</h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
-                
+            
+            <!-- Render artist data -->
+            <?php foreach ($artists as $artist): ?>
                 <div class="col">
-                    <div class="card media-card h-100 p-3 glow-pink" onclick="window.location.href='artist.php?id=1'">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop" class="avatar-circle mb-3" alt="Artist Profile">
+                    <div class="card media-card h-100 p-3 glow-pink" onclick="window.location.href='artist.php?id=<?= $artist['id'] ?>'">
+                        <img src="<?= $artist['artist_image'] ?>" class="avatar-circle mb-3" alt="Artist Profile">
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="m-0 fw-medium text-truncate small">Sabrina Carpenter</p>
-                            <i class="bi bi-box-arrow-up-right text-muted small"></i>
+                            <p class="m-0 fw-medium text-truncate small"><?= $artist['artist_name'] ?></p>
+                            <i class="bi bi-arrow-through-heart text-white small"></i>
                         </div>
                     </div>
                 </div>
-
-                <div class="col">
-                    <div class="card media-card h-100 p-3 glow-pink" onclick="window.location.href='artist.php?id=2'">
-                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop" class="avatar-circle mb-3" alt="Artist Profile">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="m-0 fw-medium text-truncate small">Billie Eilish</p>
-                            <i class="bi bi-box-arrow-up-right text-muted small"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col"><div class="card media-card h-100 p-3 glow-pink"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=300&auto=format&fit=crop" class="avatar-circle mb-3"><p class="m-0 small text-truncate">Aaron Diaz</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-pink"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop" class="avatar-circle mb-3"><p class="m-0 small text-truncate">Samson Kate</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-pink"><img src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?q=80&w=300&auto=format&fit=crop" class="avatar-circle mb-3"><p class="m-0 small text-truncate">John Flasch</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-pink"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=300&auto=format&fit=crop" class="avatar-circle mb-3"><p class="m-0 small text-truncate">Derrick Shaw</p></div></div>
+            <?php endforeach; ?>
 
             </div>
         </section>
 
+        <!-- Album showcase -->
         <section class="mb-5">
             <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Trending Albums</h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
@@ -307,6 +304,7 @@ $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
             </div>
         </section>
 
+        <!-- Yadah Yadah -->
         <section class="mb-5">
             <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Curated Playlists</h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
@@ -335,6 +333,7 @@ $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
             </div>
         </section>
 
+        <!-- Feedback -->
         <section class="mb-5">
             <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Feedback</h3>
             <div class="row g-3">

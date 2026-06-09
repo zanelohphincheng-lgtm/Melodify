@@ -2,12 +2,7 @@
 session_start();
 
 // Database Connection
-try {
-    $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root", "");
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database Connection Failed: " . $e->getMessage());
-}
+$db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
 
 // FORM ACTION SUBMISSION HANDLER
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
