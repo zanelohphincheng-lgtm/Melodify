@@ -1,18 +1,8 @@
 <?php
-session_start();
-
-require("header.php")
-
-// Database Connection
-try {
-    $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root", "");
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database Connection Failed: " . $e->getMessage());
-}
+require("header.php");
 
 // 🚫 ACTION TRIGGER: Handle User Deletion if a delete request is fired
-if (isset($_GET['delete_id'])) {
+if(isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
     
     // Prevent the logged-in admin from accidentally deleting themselves!
@@ -28,7 +18,8 @@ if (isset($_GET['delete_id'])) {
 // FETCH DATA: Retrieve all current user records ordered by newest ID first
 $query = "SELECT id, username, email, role FROM users ORDER BY id DESC";
 $stmt = $db->query($query);
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$users = $stmt->fetchAll();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

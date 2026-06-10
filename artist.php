@@ -9,6 +9,12 @@ if(isset($_GET['id'])){
     $stmt = $db->prepare($artist_query);
     $stmt->execute([':id'=>$id]);
     $artist = $stmt->fetch();
+
+    // Load album data
+    $album_query = "SELECT id, album_name, cover_image, type FROM album WHERE artist_id = :artist_id";
+    $stmt = $db->prepare($album_query);
+    $stmt->execute([':artist_id' => $id]);
+    $albums_list = $stmt->fetchAll();
 }
 ?>
 <!DOCTYPE html>
@@ -372,42 +378,27 @@ if(isset($_GET['id'])){
                     </div>
                     
                     <div class="track-mini-list">
-                        <!-- Standard Repeat Track Iteration Layout -->
-                        <a href="album.php?id=1" class="track-mini-item">
-                            <div class="track-left-meta">
-                                <span class="track-rank">1</span>
-                                <img src="upload/cover_short_n_sweet.jpg" alt="Track Cover" class="track-thumb">
-                                <div class="track-details">
-                                    <h6>Espresso</h6>
-                                    <small>Short n Sweet</small>
-                                </div>
-                            </div>
-                            <span class="track-duration">2:55</span>
-                        </a>
+                        <?php if (!empty($albums_list)): ?>
+                            <?php foreach($albums_list as $index => $single_album): ?>
+                                
+                                <a href="album.php?id=<?= $single_album['id'] ?>" class="track-mini-item">
+                                    <div class="track-left-meta">
+                                        <span class="track-rank"><?= $index + 1 ?></span>
+                                        
+                                        <img src="<?= htmlspecialchars($single_album['cover_image']) ?>" alt="Track Cover" class="track-thumb">
+                                        
+                                        <div class="track-details">
+                                            <h6><?= htmlspecialchars($single_album['album_name']) ?></h6>
+                                            <h6 class="text-capitalize"><?= htmlspecialchars($single_album['type']) ?></h6>
+                                        </div>
+                                    </div>
+                                    <i class="bi bi-chevron-right text-muted small"></i>
+                                </a>
 
-                        <a href="album.php?id=1" class="track-mini-item">
-                            <div class="track-left-meta">
-                                <span class="track-rank">2</span>
-                                <img src="upload/cover_short_n_sweet.jpg" alt="Track Cover" class="track-thumb">
-                                <div class="track-details">
-                                    <h6>Please Please Please</h6>
-                                    <small>Short n Sweet</small>
-                                </div>
-                            </div>
-                            <span class="track-duration">3:06</span>
-                        </a>
-
-                        <a href="album.php?id=1" class="track-mini-item">
-                            <div class="track-left-meta">
-                                <span class="track-rank">3</span>
-                                <img src="upload/cover_short_n_sweet.jpg" alt="Track Cover" class="track-thumb">
-                                <div class="track-details">
-                                    <h6>Juno</h6>
-                                    <small>Short n Sweet</small>
-                                </div>
-                            </div>
-                            <span class="track-duration">3:43</span>
-                        </a>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="text-muted m-0 small">No releases found for this artist.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
         </div>

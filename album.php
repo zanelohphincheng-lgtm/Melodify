@@ -13,29 +13,21 @@ if ($album_id <= 0) {
 }
 
 // FIXED: Added artist_image to the SELECT query so PHP can find it!
-$album_query = "SELECT album_name, debut, cover_image, artist_image FROM album WHERE id = :id";
+$album_query = "SELECT album.id, album.artist_id, album.album_name, album.debut, album.cover_image, album.artist_image, artists.artist_name FROM album INNER JOIN artists ON album.artist_id = artists.id WHERE album.id = :id";
 $album_stmt = $db->prepare($album_query);
 $album_stmt->execute([':id' => $album_id]);
-$album = $album_stmt->fetch(PDO::FETCH_ASSOC);
+$album = $album_stmt->fetch();
 
+// If the combination doesn't exist, it means either the album ID is wrong or the artist_id link is broken
 if (!$album) {
-    die("Error: Album not found.");
+    die("Error: Album or linked Artist not found.");
 }
 
-$artist_query = "SELECT artist_name FROM artists WHERE id = :id";
-$artist_stmt = $db->prepare($artist_query);
-$artist_stmt->execute([':id' => $album_id]);
-$artist = $artist_stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$artist) {
-    die("Error: Name not found.");
-}
-
-// 3. Fetch Songs associated with this album using your exact column name: song_name
-$songs_query = "SELECT song_name,music_file, duration FROM songs WHERE album_id = :album_id ORDER BY id ASC";
+// 3. Fetch Songs associated with this album
+$songs_query = "SELECT song_name, music_file, duration FROM songs WHERE album_id = :album_id ORDER BY id ASC";
 $songs_stmt = $db->prepare($songs_query);
 $songs_stmt->execute([':album_id' => $album_id]);
-$songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
+$songs = $songs_stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -287,7 +279,9 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
                     <span class="mx-1">•</span>
                     <!-- Fixed Avatar Image Tag -->
                     <img src="<?= htmlspecialchars($album['artist_image']); ?>" class="artist-avatar-mini" alt="Artist Profile">
-                    <span class="fw-bold text-info"><?= htmlspecialchars($artist['artist_name']); ?></span>
+                    <a href="artist.php?id=<?= $album['artist_id'] ?>" class="text-decoration-none">
+                        <span class="fw-bold text-info"><?= htmlspecialchars($album['artist_name']); ?></span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -330,7 +324,7 @@ $songs = $songs_stmt->fetchAll(PDO::FETCH_ASSOC);
                     <img src="<?= htmlspecialchars($album['cover_image']); ?>" alt="Now Playing" class="player-mini-cover">
                     <div>
                         <h5 id="player-song-title" class="m-0 text-white">Select a track</h5>
-                        <small class="text-white"><?= htmlspecialchars($artist['artist_name']); ?></small>
+                        <small class="text-white"><?= htmlspecialchars($album['artist_name']); ?></small>
                     </div>
                 </div>
 

@@ -1,4 +1,4 @@
-span<?php
+<?php
 session_start();
 $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
 
@@ -8,11 +8,26 @@ $stmt = $db->prepare($artist_query);
 $stmt->execute([]);
 $artists = $stmt->fetchAll();
 
-// Album data
-$album_query = "SELECT album.id, album.album_name, album.cover_image, artists.artist_name FROM album INNER JOIN artists ON album.artist_id = artists.id";
-$stmt = $db->prepare($album_query);
-$stmt->execute([]);
-$album = $stmt->fetchAll();
+// 1. FETCH TRENDING ALBUMS ONLY
+$album_query = "SELECT album.id, album.album_name, album.cover_image, artists.artist_name 
+                FROM album 
+                INNER JOIN artists ON album.artist_id = artists.id 
+                WHERE album.type = 'album'";
+
+$stmt_albums = $db->prepare($album_query);
+$stmt_albums->execute();
+$trending_albums = $stmt_albums->fetchAll();
+
+
+// 2. FETCH SINGLE TRACKS ONLY
+$single_query = "SELECT album.id, album.album_name, album.cover_image, artists.artist_name 
+                 FROM album 
+                 INNER JOIN artists ON album.artist_id = artists.id 
+                 WHERE album.type = 'single'";
+
+$stmt_singles = $db->prepare($single_query);
+$stmt_singles->execute();
+$single_tracks = $stmt_singles->fetchAll();
 
 // Feedback data
 $feedback_query = "SELECT id, username, feedback_content, submitted_at FROM feedback";
@@ -114,7 +129,8 @@ $feedback = $stmt->fetchAll();
             border-radius: 16px;
             padding: 60px;
             position: relative;
-            border: 1px solid var(--glass-border);
+            border: 1px solid #7b2cbf;
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
         }
 
         .btn-gradient {
@@ -291,12 +307,12 @@ $feedback = $stmt->fetchAll();
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
             
             <!-- Render album data -->
-            <?php foreach ($album as $albums): ?>
+            <?php foreach ($trending_albums as $albumItem): ?>
                 <div class="col">
-                    <div class="card media-card h-100 p-3 glow-blue" onclick="window.location.href='album.php?id=<?= $albums['id'] ?>'">
-                        <img src="<?= $albums['cover_image'] ?>" class="album-art mb-3" alt="Album Cover">
-                        <p class="m-0 fw-medium text-truncate small"><?= $albums['album_name'] ?></p>
-                        <p class="m-0 fw-medium text-truncate small"><?= $albums['artist_name'] ?></p>
+                    <div class="card media-card h-100 p-3 glow-blue" onclick="window.location.href='album.php?id=<?= $albumItem['id'] ?>'">
+                        <img src="<?= $albumItem['cover_image'] ?>" class="album-art mb-3" alt="Album Cover">
+                        <p class="m-0 fw-medium text-truncate small"><?= $albumItem['album_name'] ?></p>
+                        <p class="m-0 fw-medium text-truncate small"><?= $albumItem['artist_name'] ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -304,32 +320,21 @@ $feedback = $stmt->fetchAll();
             </div>
         </section>
 
-        <!-- Yadah Yadah -->
+        <!-- Single showcase -->
         <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Curated Playlists</h3>
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Single Tracks <i class="bi bi-cassette text-secondary small"></i></h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
                 
+            <!-- Render single data -->
+            <?php foreach ($single_tracks as $singleItem): ?>
                 <div class="col">
-                    <div class="card media-card h-100 p-3 glow-purple" onclick="window.location.href='playlist.php?id=1'">
-                        <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd6a?q=80&w=300&auto=format&fit=crop" class="album-art mb-3" alt="Playlist Cover">
-                        <p class="m-0 fw-medium text-truncate small">Lo-fi Study Beats</p>
-                        <span class="text-muted small" style="font-size: 0.8rem;">Curation Deck</span>
+                    <div class="card media-card h-100 p-3 glow-blue" onclick="window.location.href='album.php?id=<?= $singleItem['id'] ?>'">
+                        <img src="<?= $singleItem['cover_image'] ?>" class="album-art mb-3" alt="Album Cover">
+                        <p class="m-0 fw-medium text-truncate small"><?= $singleItem['album_name'] ?></p>
+                        <p class="m-0 fw-medium text-truncate small"><?= $singleItem['artist_name'] ?></p>
                     </div>
                 </div>
-
-                <div class="col">
-                    <div class="card media-card h-100 p-3 glow-purple">
-                        <img src="https://images.unsplash.com/photo-1518235506717-e1ed3306a89b?q=80&w=300&auto=format&fit=crop" class="album-art mb-3" alt="Playlist Cover">
-                        <p class="m-0 fw-medium text-truncate small">Vibe Vault 90s</p>
-                        <span class="text-muted small" style="font-size: 0.8rem;">Dance Mix</span>
-                    </div>
-                </div>
-
-                <div class="col"><div class="card media-card h-100 p-3 glow-purple"><img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">Guitar Melodies</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-purple"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">Music Box</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-purple"><img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">Some Too Time</p></div></div>
-                <div class="col"><div class="card media-card h-100 p-3 glow-purple"><img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=300&auto=format&fit=crop" class="album-art mb-3"><p class="m-0 small text-truncate">Retro Vault</p></div></div>
-
+            <?php endforeach; ?>
             </div>
         </section>
 
