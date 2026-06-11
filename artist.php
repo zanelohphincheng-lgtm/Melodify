@@ -348,7 +348,7 @@ if(isset($_GET['id'])){
                 <!-- Left Panel: Profile Journey Narrative Description -->
                 <div class="glass-panel">
                     <div class="panel-heading">
-                        <i class="bi bi-file-person-fill"></i> Inside the Melody
+                        <i class="bi bi-file-person-fill"></i> Biography
                     </div>
                     <div class="bio-text">
                         <p><?= $artist['artist_biography'] ?></p>
@@ -357,15 +357,15 @@ if(isset($_GET['id'])){
                     <!-- Structured Fact Matrix Metrics Container -->
                     <div class="artist-stats-row">
                         <div class="stat-box">
-                            <span class="stat-val">6</span>
+                            <span class="stat-val"><?= $artist['artist_album'] ?></span>
                             <span class="stat-lbl">Albums</span>
                         </div>
                         <div class="stat-box">
-                            <span class="stat-val">12B+</span>
+                            <span class="stat-val"><?= $artist['artist_streams'] ?></span>
                             <span class="stat-lbl">Streams</span>
                         </div>
                         <div class="stat-box">
-                            <span class="stat-val">Penang</span>
+                            <span class="stat-val"><?= $artist['artist_tourbase'] ?></span>
                             <span class="stat-lbl">Tour Base</span>
                         </div>
                     </div>
@@ -374,7 +374,7 @@ if(isset($_GET['id'])){
                 <!-- Right Panel: Popular Releases Index List Module -->
                 <div class="glass-panel">
                     <div class="panel-heading">
-                        <i class="bi bi-fire"></i> Popular Releases
+                        <i class="bi bi-fire"></i> Recent Releases In Melodify
                     </div>
                     
                     <div class="track-mini-list">
@@ -389,7 +389,7 @@ if(isset($_GET['id'])){
                                         
                                         <div class="track-details">
                                             <h6><?= htmlspecialchars($single_album['album_name']) ?></h6>
-                                            <h6 class="text-capitalize"><?= htmlspecialchars($single_album['type']) ?></h6>
+                                            <small class="text-capitalize"><?= htmlspecialchars($single_album['type']) ?></small>
                                         </div>
                                     </div>
                                     <i class="bi bi-chevron-right text-muted small"></i>

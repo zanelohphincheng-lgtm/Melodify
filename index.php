@@ -1,6 +1,7 @@
 <?php
 session_start();
 $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
+$current_page = 'browse';
 
 // Load Artist data
 $artist_query = "SELECT id, artist_name, artist_image FROM artists";
@@ -29,11 +30,11 @@ $stmt_singles = $db->prepare($single_query);
 $stmt_singles->execute();
 $single_tracks = $stmt_singles->fetchAll();
 
-// Feedback data
-$feedback_query = "SELECT id, username, feedback_content, submitted_at FROM feedback";
-$stmt = $db->prepare($feedback_query);
-$stmt->execute([]);
-$feedback = $stmt->fetchAll();
+    // Feedback data
+    $feedback_query = "SELECT feedback.id, feedback.feedback_content, feedback.submitted_at, users.username FROM feedback INNER JOIN users ON feedback.user_id = users.id";
+    $stmt = $db->prepare($feedback_query);
+    $stmt->execute([]);
+    $feedback = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +55,7 @@ $feedback = $stmt->fetchAll();
             --sidebar-bg: #111625;
             --card-glow-purple: #9b51e0;
             --card-glow-blue: #2d9cdb;
-            /* --card-glow-pink: #f2994a; */
+            --card-glow-pink: #d04af2;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
         }
@@ -209,38 +210,21 @@ $feedback = $stmt->fetchAll();
         .dashboard-text:hover{
             color:  rgb(0, 115, 255);
         }
+        .brand-text {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', sans-serif; /* Fallbacks for a playful rounded font */
+            font-weight: bold;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebars -->
-    <div class="sidebar d-flex flex-column py-3">
-        <div class="px-4 mb-4 d-flex align-items-center">
-            <img src="upload/logo1.png" alt="M" width="32" height="32" class="logo me-2">
-            <span class="fs-4 fw-bold tracking-tight">Melodify</span>
-        </div>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="index.php" class="nav-link active"><i class="bi bi-house-door me-2"></i> Browse</a>
-            </li>
-            <li>
-                <a href="playlists.php" class="nav-link"><i class="bi bi-collection-play me-2"></i> Your Library</a>
-            </li>
-            <li>
-                <a href="explore.php" class="nav-link"><i class="bi bi-compass me-2"></i> Explore</a>
-            </li>
-            <li>
-                <a href="manage-playlist.php" class="nav-link"><i class="bi bi-plus-square me-2"></i> Create Playlist</a>
-            </li>
-        </ul>
-        <hr class="mx-3" style="background-color: var(--glass-border)">
-        <div class="px-3 text-white small text-center">
-            &copy; 2026 Melodify copyrights
-        </div>
-    </div>
+    <!-- Sidebar -->
+    <?php require('sidebar.php') ?>
 
     <!-- Top bar -->
     <div class="main-content">
-        
         <header class="d-flex justify-content-between align-items-center mb-4">
             <div class="position-relative w-25">
                 <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
@@ -276,14 +260,14 @@ $feedback = $stmt->fetchAll();
                 <div class="col-md-8">
                     <h1 class="display-4 fw-bold mb-3">EXPLORE YOUR SOUNDS AND VOICE.</h1>
                     <p class="lead text-light mb-4 opacity-75">Rediscover the music you love, and find your new obsessions.</p>
-                    <button class="btn btn-gradient btn-lg">START LISTENING NOW</button>
+                    <a href="#music"><button class="btn btn-gradient btn-lg">START LISTENING NOW</button></a>
                 </div>
             </div>
         </section>
 
         <!-- Artist showcase -->
         <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Artists <i class="bi bi-arrow-through-heart text-secondary small"></i></h3>
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Artists <i class="bi bi-arrow-through-heart text-secondary"></i></h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
             
             <!-- Render artist data -->
@@ -302,8 +286,8 @@ $feedback = $stmt->fetchAll();
         </section>
 
         <!-- Album showcase -->
-        <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Trending Albums <i class="bi bi-file-earmark-music text-secondary small"></i></h3>
+        <section class="mb-5" id="music">
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Trending Albums <i class="bi bi-file-earmark-music text-secondary"></i></h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
             
             <!-- Render album data -->
@@ -322,7 +306,7 @@ $feedback = $stmt->fetchAll();
 
         <!-- Single showcase -->
         <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Single Tracks <i class="bi bi-cassette text-secondary small"></i></h3>
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Single Tracks <i class="bi bi-cassette text-secondary"></i></h3>
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-4">
                 
             <!-- Render single data -->
@@ -340,7 +324,7 @@ $feedback = $stmt->fetchAll();
 
         <!-- Feedback -->
         <section class="mb-5">
-            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Feedback</h3>
+            <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Feedback <i class="bi bi-chat-heart text-secondary"></i></h3>
             <div class="row g-3">
 
                 <?php foreach ($feedback as $feedbacks): ?>
@@ -357,8 +341,12 @@ $feedback = $stmt->fetchAll();
                 <?php endforeach; ?>
             </div>
         </section>
-
     </div>
+
+    <div class="px-3 text-secondary small text-center">
+        &copy; 2026 Melodify copyrights
+    </div>
+    <br/>
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

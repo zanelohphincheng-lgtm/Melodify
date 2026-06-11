@@ -1,27 +1,45 @@
 <?php
 session_start();
-$db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
 
-$query = "INSERT INTO feedback (username, email, feedback_content) VALUE (:username, :email, :feedback_content)";
+// 🚫 HARSH GATE: If the user is NOT logged in, kick them out immediately!
+if (!isset($_SESSION['user'])) {
+    header("Location: login-form.php"); // Or whatever your login filename is
+    exit(); // Always stop execution after a redirect
+}
 
-// Check if the form was submitted via POST
-    // Validate that fields aren't blank
-    if(isset($_POST['username']) && isset($_POST['email']) && isset($_POST['feedback_content'])){
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $feedback_content = $_POST['feedback_content'];
+$user_id  = $_SESSION['user']['id'];
+$username = $_SESSION['user']['username'];
+$email    = $_SESSION['user']['email'];
 
-        $stmt = $db->prepare($query);
-        $stmt->execute([
-            ":username" => $username,
-            ":email" => $email,
-            ":feedback_content" => $feedback_content
-           ]);
-        echo "<script>
-                    alert('Feedback Submitted Successfully! Redirecting to homepage...');
-                    window.location.href = 'index.php'; 
-            </script>";
+$success_msg = "";
+$error_msg = "";
+
+// Handle the Form Submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $feedback_content = trim($_POST['feedback_content']);
+
+    if (!empty($feedback_content)) {
+        try {
+            // Reconnect using clean PDO
+            $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Insert into your database linking directly via foreign key
+            $query = "INSERT INTO feedback (user_id, feedback_content) VALUES (:user_id, :feedback_content)";
+            $stmt = $db->prepare($query);
+            $stmt->execute([
+                ':user_id' => $user_id,
+                ':feedback_content' => $feedback_content
+            ]);
+
+            $success_msg = "Thank you for sharing! Your feedback has been submitted successfully.";
+        } catch (PDOException $e) {
+            $error_msg = "Database Error: " . $e->getMessage();
+        }
+    } else {
+        $error_msg = "You can't submit an empty feedback box!";
     }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -180,28 +198,23 @@ $query = "INSERT INTO feedback (username, email, feedback_content) VALUE (:usern
         <div class="feedback-card">
             <h2 class="text-center page-title mb-4">Feedback</h2>
 
-            <!-- <?php if (!empty($success_message)): ?>
-                <div class="alert alert-success text-center border-0 rounded-3 mb-4">
-                    <i class="bi bi-check-circle-fill me-2"></i> <?= htmlspecialchars($success_message); ?>
-                </div>
+            <?php if(!empty($success_msg)): ?>
+                <div class="alert alert-success bg-success text-white border-0"><?= $success_msg ?></div>
             <?php endif; ?>
-
-            <?php if (!empty($error_message)): ?>
-                <div class="alert alert-danger text-center border-0 rounded-3 mb-4">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> <?= htmlspecialchars($error_message); ?>
-                </div>
-            <?php endif; ?> -->
+            <?php if(!empty($error_msg)): ?>
+                <div class="alert alert-danger bg-danger text-white border-0"><?= $error_msg ?></div>
+            <?php endif; ?>
 
             <form action="Feedback.php" method="POST">
                 
                 <div class="mb-4">
                     <label class="form-label-custom">Name :</label>
-                    <input type="text" name="username" class="form-control-custom" placeholder="Enter your name" required>
+                    <input type="text" name="username" class="form-control-custom" placeholder="Enter your name" value="<?= htmlspecialchars($username) ?>" readonly>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label-custom">Email :</label>
-                    <input type="email" name="email" class="form-control-custom" placeholder="Enter your email" required>
+                    <input type="email" name="email" class="form-control-custom" placeholder="Enter your email" value="<?= htmlspecialchars($email) ?>" readonly>
                 </div>
 
                 <div class="mb-4">
