@@ -1,61 +1,31 @@
 <?php
-session_start();
+require("header.php");
 
-require("header.php")
+$insert_query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
 
-// Database Connection Setup
-try {
-    $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root", "");
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database Connection Failed: " . $e->getMessage());
-}
-
-// FORM ACTION DISPATCH DECK
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = isset($_POST['username']) ? trim($_POST['username']) : '';
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-    $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
-    $role = isset($_POST['role']) ? intval($_POST['role']) : 2;
-
-    // 1. Validation Logic Checks
-    if (empty($username) || empty($email) || empty($password)) {
-        echo "<script>alert('Please fill up all required input slots.');</script>";
-    } elseif ($password !== $confirm_password) {
-        echo "<script>alert('Password verification mismatch! Ensure both entries are identical.');</script>";
+if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['confirm_password']) && isset($_POST['role'])) {
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    $role = $_POST['role'];
+    if ($password == $confirm_password) {
+        $stmt = $db->prepare($insert_query);
+        $stmt->execute([
+            ":username" => $username,
+            ":email" => $email,
+            ":password" => password_hash($password, PASSWORD_BCRYPT),
+            ":role" => $role
+        ]);
+        // 🌟 The JavaScript Alert + Redirect Trick
+        echo "<script>
+            alert('User \"' + " . json_encode($username) . " + '\" has been successfully added!');
+            window.location.href = 'manage-users.php';
+        </script>";
+        exit(); // Stop any further PHP execution
+        
     } else {
-        try {
-            // 2. Uniqueness Check: Prevent duplicate usernames
-            $check_query = "SELECT COUNT(*) FROM users WHERE username = :username";
-            $check_stmt = $db->prepare($check_query);
-            $check_stmt->execute([':username' => $username]);
-            
-            if ($check_stmt->fetchColumn() > 0) {
-                echo "<script>alert('This username is already taken! Pick another one.');</script>";
-            } else {
-                // 3. Insertion Action execution
-                $insert_query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
-                $insert_stmt = $db->prepare($insert_query);
-                
-                $success = $insert_stmt->execute([
-                    ':username' => $username,
-                    ':email'    => $email,
-                    ':password' => password_hash($password, PASSWORD_BCRYPT), // Secure BCRYPT hashing
-                    ':role'     => $role
-                ]);
-
-                if ($success) {
-                    echo "<script>
-                        alert('New account profile successfully deployed!');
-                        window.location.href = 'manage-users.php';
-                    </script>";
-                    exit();
-                }
-            }
-        } catch (PDOException $e) {
-            echo "<script>alert('Database pipeline crash: " . addslashes($e->getMessage()) . "');</script>";
-        }
+        echo "<script>alert('Passwords do not match! Please try again.');</script>";
     }
 }
 ?>

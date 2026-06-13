@@ -140,8 +140,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         /* Clean White Input Elements */
         .form-control-custom {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            background-color: #070a13 !important;
+            color: #a1a1aa !important;
             border: none;
             border-radius: 12px;
             padding: 14px 20px;
@@ -196,7 +196,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <main class="feedback-wrapper">
         <div class="feedback-card">
-            <h2 class="text-center page-title mb-4">Feedback</h2>
+            <h2 class="text-center page-title mb-0">Feedback Form</h2>
+            <p class="fs-5 text-secondary text-center mb-4">Username and email are needed for further inprovement or follow up on issue you've faced!</p>
 
             <?php if(!empty($success_msg)): ?>
                 <div class="alert alert-success bg-success text-white border-0"><?= $success_msg ?></div>

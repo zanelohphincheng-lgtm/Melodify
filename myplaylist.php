@@ -1,7 +1,7 @@
 <?php
 session_start();
 $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
-$current_page = 'favourite';
+$current_page = 'my-playlist';
 
 // 🚫 Gate: Only logged-in members can have favorites
 if (!isset($_SESSION['user'])) {
@@ -29,7 +29,7 @@ if (!isset($_SESSION['user'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodify - Your Favourite</title>
+    <title>Melodify - Your Playlist</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -170,7 +170,7 @@ if (!isset($_SESSION['user'])) {
     <!-- Sidebar -->
     <?php require('sidebar.php') ?>
 
-    <!-- Favourite Main Content -->
+    <!-- Playlist Main Content -->
     <div class="main-content">
         <header class="d-flex justify-content-between align-items-center mb-5">
             <div class="position-relative w-25">
@@ -196,7 +196,7 @@ if (!isset($_SESSION['user'])) {
         </header>
 
         <section class="mb-5">
-            <h2 class="display-5 fw-bold mb-4">Your Favourite Tracks</h2>
+            <h2 class="display-5 fw-bold mb-4">Your Playlist Tracks</h2>
             
             <!-- Data -->
             <?php if (!empty($favorites)): ?>
@@ -214,7 +214,7 @@ if (!isset($_SESSION['user'])) {
             <?php else: ?>
                 <div class="text-center text-muted py-5" style="background: var(--glass-bg); border: 1px dashed var(--glass-border); border-radius: 16px;">
                     <i class="bi bi-heartbreak display-3 mb-3 text-secondary d-block"></i>
-                    <p class="fs-5 m-0 text-secondary">No favorite song yet...</p>
+                    <p class="fs-5 m-0 text-secondary">No playlist yet...</p>
                     <small class="text-info d-block mt-1">AVAILABLE ON NEXT UPDATE</small>
                 </div>
             <?php endif; ?>

@@ -217,6 +217,9 @@ $single_tracks = $stmt_singles->fetchAll();
             font-weight: bold;
             margin: 0;
         }
+        section a:active{
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -312,7 +315,7 @@ $single_tracks = $stmt_singles->fetchAll();
             <!-- Render single data -->
             <?php foreach ($single_tracks as $singleItem): ?>
                 <div class="col">
-                    <div class="card media-card h-100 p-3 glow-blue" onclick="window.location.href='album.php?id=<?= $singleItem['id'] ?>'">
+                    <div class="card media-card h-100 p-3 glow-purple" onclick="window.location.href='album.php?id=<?= $singleItem['id'] ?>'">
                         <img src="<?= $singleItem['cover_image'] ?>" class="album-art mb-3" alt="Album Cover">
                         <p class="m-0 fw-medium text-truncate small"><?= $singleItem['album_name'] ?></p>
                         <p class="m-0 fw-medium text-truncate small"><?= $singleItem['artist_name'] ?></p>
