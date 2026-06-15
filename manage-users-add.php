@@ -190,8 +190,8 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
                 <div class="mb-5">
                     <label class="form-label form-label-custom">Role</label>
                     <select name="role" class="form-select form-select-custom">
-                        <option value="2" selected>2 (User)</option>
-                        <option value="1">1 (Admin)</option>
+                        <option value="2" selected>User</option>
+                        <option value="1">Admin</option>
                     </select>
                 </div>
 

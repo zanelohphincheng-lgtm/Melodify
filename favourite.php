@@ -196,7 +196,7 @@ if (!isset($_SESSION['user'])) {
         </header>
 
         <section class="mb-5">
-            <h2 class="display-5 fw-bold mb-4">Your Favourite Tracks</h2>
+            <h2 class="display-5 fw-bold mb-4">Your Favourite</h2>
             
             <!-- Data -->
             <?php if (!empty($favorites)): ?>

@@ -1,24 +1,24 @@
 <?php
 require("header.php");
 
-// 🚫 ACTION TRIGGER: Handle song Deletion if a delete request is fired
+// 🚫 ACTION TRIGGER: Handle feedback Deletion if a delete request is fired
 if(isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
     
     // Prevent the logged-in admin from accidentally deleting themselves!
-    if ($delete_id !== intval($_SESSION['song']['id'])) {
-        $delete_query = "DELETE FROM songs WHERE id = :id";
+    if ($delete_id !== intval($_SESSION['feedback']['id'])) {
+        $delete_query = "DELETE FROM feedback WHERE id = :id";
         $delete_stmt = $db->prepare($delete_query);
         $delete_stmt->execute([':id' => $delete_id]);
     }
-    header("Location: manage-songs.php");
+    header("Location: manage-feedback.php");
     exit();
 }
 
-// FETCH DATA: Retrieve all current song records ordered by newest ID first
-$query = "SELECT songs.id, songs.song_name, songs.duration, songs.uploadDate,songs.album_id, artists.artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id  ORDER BY id DESC";
+// FETCH DATA: Retrieve all current feedback records ordered by newest ID first
+$query = "SELECT feedback.id, feedback.feedback_content, feedback.submitted_at, users.username FROM feedback INNER JOIN users ON feedback.user_id = users.id  ORDER BY id DESC";
 $stmt = $db->query($query);
-$songs = $stmt->fetchAll();
+$feedbacks = $stmt->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -26,7 +26,7 @@ $songs = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodify - Manage Songs</title>
+    <title>Melodify - Manage Feedbacks</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -65,7 +65,6 @@ $songs = $stmt->fetchAll();
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 0.5px;
-            text-align: center;
         }
 
         /* Styled Action Buttons matching your canvas mockups */
@@ -158,10 +157,11 @@ $songs = $stmt->fetchAll();
             </a>
             <div class="panel-title text-center">
                 <img src="upload/logo3.png" alt="Logo" width="30" class="me-2 mb-1">
-                Manage Songs
+                Manage Feedbacks
             </div>
-            <div></div>
-            <div></div><!-- these two empty div tags are to fill in the space fullfilling the space between condition, keeping the title in the middle -->
+            <a href="feedback.php" class="btn-pill-custom btn-purple-pill">
+                Add New Feedback <i class="bi bi-person-plus-fill"></i> <i class="bi bi-arrow-right-circle"></i>
+            </a>
         </div>
 
         <div class="management-card">
@@ -171,30 +171,25 @@ $songs = $stmt->fetchAll();
                         <tr>
                             <!-- Create spaces -->
                             <th style="width: 10%">ID</th>
-                            <th style="width: 30%">Name</th>
-                            <th style="width: 20%">Artist</th>
-                            <th style="width: 5%" class="text-center">Duration</th>
-                            <th style="width: 10%" class="text-center">UploadDate</th>
+                            <th style="width: 20%">Username</th>
+                            <th style="width: 40%">Content</th>
+                            <th style="width: 15%" class="text-center">Submitted At</th>
                             <th style="width: 15%" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($songs as $song): ?>
+                        <?php foreach($feedbacks as $feedback): ?>
                             <tr>
-                                <td><?= htmlspecialchars($song['id']); ?></td>
-                                <td class="fw-semibold"><?= htmlspecialchars($song['song_name']); ?></td>
-                                <td class="text-white"><?= htmlspecialchars($song['artist_name']); ?></td>
-                                <td class="text-center"><?= htmlspecialchars($song['duration']); ?></td>
-                                <td class="text-center"><?= htmlspecialchars($song['uploadDate']); ?></td>
+                                <td><?= htmlspecialchars($feedback['id']); ?></td>
+                                <td class="fw-semibold"><?= htmlspecialchars($feedback['username']); ?></td>
+                                <td class="text-white"><?= htmlspecialchars($feedback['feedback_content']); ?></td>
+                                <td class="text-center"><?= htmlspecialchars($feedback['submitted_at']); ?></td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
-                                        <a href="album.php?id=<?= $song['album_id']; ?>" class="action-box bg-box-view" title="View Song">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="manage-music.php?delete_id=<?= $song['id']; ?>" 
+                                        <a href="manage-feedback.php?delete_id=<?= $feedback['id']; ?>" 
                                            class="action-box bg-box-delete" 
-                                           title="Delete song"
-                                           onclick="return confirm('Are you sure you want to completely remove <?= htmlspecialchars($song['song_name']); ?>? This cannot be undone.');">
+                                           title="Delete Feedback"
+                                           onclick="return confirm('Are you sure you want to completely remove the feedback posted by <?= htmlspecialchars($feedback['username']); ?>? This cannot be undone.');">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>

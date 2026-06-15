@@ -135,7 +135,7 @@ $users = $stmt->fetchAll();
         }
 
         .badge-admin {
-            background-color: #3a92b7; 
+            background-color: #2b98c7; 
             color: #ffffff;
         }
 
@@ -162,6 +162,7 @@ $users = $stmt->fetchAll();
             color: #0b0f19;
         }
 
+        .bg-box-view { background-color: #00ccfa; }     /* Blue */
         .bg-box-edit { background-color: #22c55e; }     /* Green */
         .bg-box-delete { background-color: #ef4444; }   /* Red */
     </style>

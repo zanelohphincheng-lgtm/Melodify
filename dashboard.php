@@ -146,30 +146,54 @@ require("header.php");
         <div class="mb-2">
             <img src="upload/logo3.png" alt="Melodify Logo" width="55" class="mb-2">
         </div>
-        <h1 class="dashboard-title">Admin Dashboard</h1>
+        <h1 class="dashboard-title">ADMIN DASHBOARD</h1>
 
         <div class="row g-4 justify-content-center mb-5">
             
-            <div class="col-sm-6 col-md-5">
+            <div class="col-md-6">
                 <div class="menu-card">
                     <div class="card-heading">Manage Music List</div>
                     <div class="icon-box">
                         <i class="bi bi-music-note-beamed"></i>
                     </div>
                     <a href="manage-music.php" class="btn-access">
-                        <i class="bi bi-arrow-left-circle"></i> Access
+                        Access
                     </a>
                 </div>
             </div>
 
-            <div class="col-sm-6 col-md-5">
+            <div class="col-md-6">
+                <div class="menu-card">
+                    <div class="card-heading">Manage Artists</div>
+                    <div class="icon-box">
+                        <i class="bi bi-person-hearts"></i>
+                    </div>
+                    <a href="manage-artist.php" class="btn-access">
+                        Access
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
                 <div class="menu-card">
                     <div class="card-heading">Manage Users</div>
                     <div class="icon-box">
                         <i class="bi bi-people-fill"></i>
                     </div>
                     <a href="manage-users.php" class="btn-access">
-                        Access <i class="bi bi-arrow-right-circle"></i>
+                        Access
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="menu-card">
+                    <div class="card-heading">Manage Feedback</div>
+                    <div class="icon-box">
+                        <i class="bi bi-chat-heart"></i>
+                    </div>
+                    <a href="manage-feedback.php" class="btn-access">
+                        Access
                     </a>
                 </div>
             </div>

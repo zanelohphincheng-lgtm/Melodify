@@ -339,6 +339,12 @@ if(isset($_GET['id'])){
                     <div class="listener-count">
                         <i class="bi bi-headset"></i> <?= $artist['monthly_listener'] ?>
                     </div>
+                    <br/>
+                    <p class="fw-bold">Social Media :  
+                        <a href="<?= $artist['artist_instagram'] ?>" class="insta-link" style="text-decoration: none; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold">
+                                <i class="bi bi-instagram fs-5"></i>
+                        </a>
+                    </p>
                 </div>
             </div>
 

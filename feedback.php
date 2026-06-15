@@ -22,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             // Reconnect using clean PDO
             $db = new PDO("mysql:host=localhost;dbname=project_sem1", "root");
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Insert into your database linking directly via foreign key
             $query = "INSERT INTO feedback (user_id, feedback_content) VALUES (:user_id, :feedback_content)";
@@ -91,6 +90,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transform: translateY(-2px);
         }
 
+        .btn-pill-custom {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-purple-pill {
+            background: linear-gradient(90deg, #a855f7, #d946ef);
+            color: white;
+        }
+        .btn-purple-pill:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3);
+        }
+
         .brand-logo-container {
             position: absolute;
             left: 50%;
@@ -140,8 +161,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         /* Clean White Input Elements */
         .form-control-custom {
-            background-color: #070a13 !important;
-            color: #a1a1aa !important;
+            background-color: #ffffff !important;
+            color: #717171 !important;
             border: none;
             border-radius: 12px;
             padding: 14px 20px;
@@ -153,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .form-control-custom::placeholder {
-            color: #a1a1aa;
+            color: #717171;
             font-weight: 400;
         }
 
@@ -184,20 +205,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <header class="header-nav">
-        <a href="index.php" class="btn-go-back">
-            <i class="bi bi-arrow-left-circle-fill"></i> Go Back
-        </a>
-        <div class="brand-logo-container">
-            <img src="upload/logo3.png" alt="Melodify Logo" width="42" height="42">
-            <h1 class="brand-text">Melodify</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4 w-100 px-1">
+            <a href="index.php" class="btn-go-back">
+                <i class="bi bi-arrow-left-circle-fill"></i> Go Back
+            </a>
+            <div class="brand-logo-container">
+                <img src="upload/logo3.png" alt="Melodify Logo" width="42" height="42">
+                <h1 class="brand-text">Melodify</h1>
+            </div>
+            <?php if(isset($_SESSION['user']['role']) && $_SESSION['user']['role'] == "admin"):  ?>
+            <a href="manage-feedback.php" class="btn-pill-custom btn-purple-pill">
+                Manage Feedback <i class="bi bi-person-plus-fill"></i> <i class="bi bi-arrow-right-circle"></i>
+            </a>
+            <?php endif ?>
         </div>
-        <div style="width: 110px;"></div> 
     </header>
 
     <main class="feedback-wrapper">
         <div class="feedback-card">
             <h2 class="text-center page-title mb-0">Feedback Form</h2>
-            <p class="fs-5 text-secondary text-center mb-4">Username and email are needed for further inprovement or follow up on issue you've faced!</p>
+            <p class="fs-5 text-info text-center mb-4">Username and email are needed for further inprovement or follow up on issue you've faced!</p>
 
             <?php if(!empty($success_msg)): ?>
                 <div class="alert alert-success bg-success text-white border-0"><?= $success_msg ?></div>

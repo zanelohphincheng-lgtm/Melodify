@@ -9,6 +9,7 @@
             <a href="index.php" class="nav-link <?= ($current_page == 'browse') ? 'active' : ''; ?>">
                 <i class="bi bi-house-door text-success me-2"></i> 
                 Browse
+                </i>
             </a>
         </li>
         <li>

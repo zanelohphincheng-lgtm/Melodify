@@ -1,24 +1,24 @@
 <?php
 require("header.php");
 
-// 🚫 ACTION TRIGGER: Handle song Deletion if a delete request is fired
+// 🚫 ACTION TRIGGER: Handle artist Deletion if a delete request is fired
 if(isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
     
     // Prevent the logged-in admin from accidentally deleting themselves!
-    if ($delete_id !== intval($_SESSION['song']['id'])) {
-        $delete_query = "DELETE FROM songs WHERE id = :id";
+    if ($delete_id !== intval($_SESSION['artist_name']['id'])) {
+        $delete_query = "DELETE FROM artists WHERE id = :id";
         $delete_stmt = $db->prepare($delete_query);
         $delete_stmt->execute([':id' => $delete_id]);
     }
-    header("Location: manage-songs.php");
+    header("Location: manage-artists.php");
     exit();
 }
 
-// FETCH DATA: Retrieve all current song records ordered by newest ID first
-$query = "SELECT songs.id, songs.song_name, songs.duration, songs.uploadDate,songs.album_id, artists.artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id  ORDER BY id DESC";
+// FETCH DATA: Retrieve all current artist records ordered by newest ID first
+$query = "SELECT * FROM artists ORDER BY id DESC";
 $stmt = $db->query($query);
-$songs = $stmt->fetchAll();
+$artists = $stmt->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -26,7 +26,7 @@ $songs = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodify - Manage Songs</title>
+    <title>Melodify - Manage Artists</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -65,7 +65,6 @@ $songs = $stmt->fetchAll();
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 0.5px;
-            text-align: center;
         }
 
         /* Styled Action Buttons matching your canvas mockups */
@@ -123,7 +122,7 @@ $songs = $stmt->fetchAll();
         .custom-table tbody td {
             padding: 15px 10px;
             font-size: 1.05rem;
-        }   
+        }
 
         /* Square Icon Control Buttons Grid */
         .action-box {
@@ -158,7 +157,7 @@ $songs = $stmt->fetchAll();
             </a>
             <div class="panel-title text-center">
                 <img src="upload/logo3.png" alt="Logo" width="30" class="me-2 mb-1">
-                Manage Songs
+                Manage Artists
             </div>
             <div></div>
             <div></div><!-- these two empty div tags are to fill in the space fullfilling the space between condition, keeping the title in the middle -->
@@ -171,30 +170,32 @@ $songs = $stmt->fetchAll();
                         <tr>
                             <!-- Create spaces -->
                             <th style="width: 10%">ID</th>
-                            <th style="width: 30%">Name</th>
-                            <th style="width: 20%">Artist</th>
-                            <th style="width: 5%" class="text-center">Duration</th>
-                            <th style="width: 10%" class="text-center">UploadDate</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 10%" class="text-center">Albums</th>
+                            <th style="width: 10%">Streams</th>
+                            <th style="width: 15%">Tourbase</th>
+                            <th style="width: 20%">Monthly Listener</th>
                             <th style="width: 15%" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($songs as $song): ?>
+                        <?php foreach($artists as $artist): ?>
                             <tr>
-                                <td><?= htmlspecialchars($song['id']); ?></td>
-                                <td class="fw-semibold"><?= htmlspecialchars($song['song_name']); ?></td>
-                                <td class="text-white"><?= htmlspecialchars($song['artist_name']); ?></td>
-                                <td class="text-center"><?= htmlspecialchars($song['duration']); ?></td>
-                                <td class="text-center"><?= htmlspecialchars($song['uploadDate']); ?></td>
+                                <td><?= htmlspecialchars($artist['id']); ?></td>
+                                <td class="fw-semibold"><?= htmlspecialchars($artist['artist_name']); ?></td>
+                                <td class="text-white-50"><?= htmlspecialchars($artist['artist_album']); ?></td>
+                                <td class="text-white-50"><?= htmlspecialchars($artist['artist_streams']); ?></td>
+                                <td class="text-white-50"><?= htmlspecialchars($artist['artist_tourbase']); ?></td>
+                                <td class="text-white-50"><?= htmlspecialchars($artist['monthly_listener']); ?></td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
-                                        <a href="album.php?id=<?= $song['album_id']; ?>" class="action-box bg-box-view" title="View Song">
+                                        <a href="artist.php?id=<?= $artist['id']; ?>" class="action-box bg-box-view" title="View Artist">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="manage-music.php?delete_id=<?= $song['id']; ?>" 
+                                        <a href="manage-artists.php?delete_id=<?= $artist['id']; ?>" 
                                            class="action-box bg-box-delete" 
-                                           title="Delete song"
-                                           onclick="return confirm('Are you sure you want to completely remove <?= htmlspecialchars($song['song_name']); ?>? This cannot be undone.');">
+                                           title="Delete artist"
+                                           onclick="return confirm('Are you sure you want to completely remove <?= htmlspecialchars($artist['artist_name']); ?>? This cannot be undone.');">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>
