@@ -341,37 +341,38 @@ $songs = $songs_stmt->fetchAll();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript : Core Audio Playback Engine (the track list and bottom player bar) -->
     <script>
-        // 1. Initialize the global audio engine variable
-        let currentAudio = null;
-        let isPlaying = false;
+        // Initialize the global audio engine variable
+        let currentAudio = null; //By default there's no song playing
+        let isPlaying = false;   //which means nothing is playing
 
-        // 2. Select the UI interface elements
-        const playToggleBtn = document.getElementById('btn-play-toggle');
-        const playIcon = document.getElementById('play-icon');
-        const playerSongTitle = document.getElementById('player-song-title');
+        // Select the UI interface elements
+        const playToggleBtn = document.getElementById('btn-play-toggle');     //The PLAY/PAUSE button
+        const playIcon = document.getElementById('play-icon');                //The graphic icon look(Allowing the changes between play and pause icon)
+        const playerSongTitle = document.getElementById('player-song-title'); //Text block that displays the Song Title
 
-        // 3. Add event listeners to all row selections
+        // Add event listeners to all row selections
         document.querySelectorAll('.track-row').forEach(row => {
             row.addEventListener('click', function() {
-                const songName = this.getAttribute('data-songname');
-                const audioFile = this.getAttribute('data-audiofile');
+                const songName = this.getAttribute('data-songname');   //Select the Name based on which id I've pressed
+                const audioFile = this.getAttribute('data-audiofile'); //Select the AudioFile based on the id too
 
                 // Safety fallback check if database record is missing a path
                 if (!audioFile) {
-                    alert("No audio file found for this track track!");
+                    alert("No audio file found for this track track!"); //No AudioFile, no vibe
                     return;
                 }
-
-                // 4. If a track is already playing, stop it completely first
+                
+                // Playing another song while playing one?
+                // If a track is already playing, stop it completely first
                 if (currentAudio) {
                     currentAudio.pause();
                 }
-
-                // 5. Instantiating a new core audio object with your path string
+                // Proceed to find the newly clicked song's data
                 currentAudio = new Audio(audioFile);
                 
-                // Update the display text layout inside player panel
+                // Update the display text showing the newly clicked song
                 playerSongTitle.innerText = songName;
                 
                 // Play the track file resource
@@ -383,9 +384,9 @@ $songs = $songs_stmt->fetchAll();
             });
         });
 
-        // 6. Main Control Bar Center Toggle Button Interaction Rule
+        // Main Control Bar Center Toggle Button Interaction Rule (Allowing the REAL pause and play function)
         playToggleBtn.addEventListener('click', function() {
-            if (!currentAudio) return; // Do nothing if no song has been picked yet
+            if (!currentAudio) return; // Do nothing if no song has been picked yet (No selection, no music file playing)
 
             if (isPlaying) {
                 currentAudio.pause();

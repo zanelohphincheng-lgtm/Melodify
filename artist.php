@@ -344,6 +344,12 @@ if(isset($_GET['id'])){
                         <a href="<?= $artist['artist_instagram'] ?>" class="insta-link" style="text-decoration: none; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold">
                                 <i class="bi bi-instagram fs-5"></i>
                         </a>
+                        <a href="<?= $artist['artist_twitter'] ?>" class="twitter-link" style="text-decoration: none; color: white;">
+                                <i class="bi bi-twitter-x fs-5"></i>
+                        </a>
+                        <a href="<?= $artist['artist_tiktok'] ?>" class="tiktok-link" style="text-decoration: none;color: white; display: inline-block;"> <!-- make sure alignment padding coordinates sit in the same line with the insta and twitter icon -->
+                                <i class="bi bi-tiktok fs-5" style="text-shadow: -1.5px -1.5px 0px #00f2fe, 1.5px 1.5px 0px #fe0979;"></i>
+                        </a>
                     </p>
                 </div>
             </div>
