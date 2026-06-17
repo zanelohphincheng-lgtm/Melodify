@@ -146,7 +146,7 @@ require("header.php");
         <div class="mb-2">
             <img src="upload/logo3.png" alt="Melodify Logo" width="55" class="mb-2">
         </div>
-        <h1 class="dashboard-title">ADMIN DASHBOARD</h1>
+        <h1 class="dashboard-title">admin dashboard</h1>
 
         <div class="row g-4 justify-content-center mb-5">
             

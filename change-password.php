@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ':username' => $username,
                 ':email'    => $email
             ]);
-            $user = $verify_stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $verify_stmt->fetch();
 
             if ($user) {
                 // 4. Match found! Hash the new password and update the database record
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 // Security tip: Keeping this message generic prevents brute-force username scanning
                 echo "<script>alert('Invalid account details. Username and Email combo does not match our records.');</script>";
-            }
+            }   //Showing what kind of error is going on
         } catch (PDOException $e) {
             echo "<script>alert('Error processing update: " . addslashes($e->getMessage()) . "');</script>";
         }

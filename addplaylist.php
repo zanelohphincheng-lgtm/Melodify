@@ -9,20 +9,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-// $user_id = $_SESSION['user']['id'];
-// $favorites = [];
-
-//     // SQL JOIN: Pull favorite records linked to user account
-//     $query = "SELECT album.id AS album_id, album.album_name, album.cover_image, artists.artist_name 
-//               FROM user_favorites 
-//               INNER JOIN album ON user_favorites.song_id = album.id 
-//               INNER JOIN artists ON album.artist_id = artists.id
-//               WHERE user_favorites.user_id = :user_id 
-//               ORDER BY user_favorites.created_at DESC";
-              
-//     $stmt = $db->prepare($query);
-//     $stmt->execute([':user_id' => $user_id]);
-//     $favorites = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,28 +158,7 @@ if (!isset($_SESSION['user'])) {
 
     <!-- Playlist Main Content -->
     <div class="main-content">
-        <header class="d-flex justify-content-between align-items-center mb-5">
-            <div class="position-relative w-25">
-                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" class="form-control search-bar" placeholder="Search...">
-            </div>
-            <!-- User icon -->
-            <div class="auth-action-zone">
-                <div class="dropdown">
-                    <button class="btn btn-outline-light dropdown-toggle px-4" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle me-2"></i>
-                        <?= htmlspecialchars($_SESSION['user']['username']); ?>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="userMenu" style="background: #111625; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;">
-                        <?php if(isset($_SESSION['user']['role']) && $_SESSION['user']['role'] == "admin"): ?>
-                            <li><a class="dropdown-menu-item dropdown-item py-2 dashboard-text" href="dashboard.php"><i class="bi bi-card-checklist me-2 dashboard-text"></i>Dashboard</a></li>
-                        <?php endif; ?>
-                        <li><a class="dropdown-menu-item dropdown-item py-2" href="feedback.php"><i class="bi bi-envelope-paper-heart me-2 text-white"></i>Feedback</a></li>
-                        <li><a class="dropdown-menu-item dropdown-item py-2" href="logout.php?logout=true"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Log Out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
+        <?php require('topbar.php')?>
 
         <section class="mb-5">
             <h2 class="display-5 fw-bold mb-4">Your Vibe Creator</h2>

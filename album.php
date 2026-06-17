@@ -250,6 +250,9 @@ $songs = $songs_stmt->fetchAll();
             background: #3b82f6;
             color: #ffffff;
         }
+        .comment-icon{
+            text-align: end;
+        }
     </style>
 </head>
 <body>
@@ -283,6 +286,9 @@ $songs = $songs_stmt->fetchAll();
                         <span class="fw-bold text-info"><?= htmlspecialchars($album['artist_name']); ?></span>
                     </a>
                 </div>
+                <a href="comment.php?id=<?= $album['id'] ?>" class="text-decoration-none text-white">
+                    <i class="bi bi-chat-dots"> Comment</i>
+                </a>
             </div>
         </div>
 
@@ -293,9 +299,10 @@ $songs = $songs_stmt->fetchAll();
                 <table class="track-table">
                     <thead>
                         <tr>
-                            <th style="width: 8%;">#</th>
-                            <th style="width: 72%;">Title</th>
-                            <th style="width: 20%;" class="text-end">Duration</th>
+                            <th style="width: 10%;">#</th>
+                            <th style="width: 60%;">Title</th>
+                            <th style="width: 20%;" class="text-center">Actions</th>
+                            <th style="width: 10%;" class="text-center">Duration</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -306,7 +313,17 @@ $songs = $songs_stmt->fetchAll();
                                 data-audiofile="<?= htmlspecialchars($song['music_file']); ?>">
                                 <td class="text-muted-custom ps-2"><?= $index++; ?></td>
                                 <td><?= htmlspecialchars($song['song_name']); ?></td>
-                                <td class="text-end pe-2 text-muted-custom"><?= htmlspecialchars($song['duration']); ?></td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <button class="border-0 p-0 text-secondary control-icon fs-5" title="Like">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                        <button class="border-0 p-0 text-secondary control-icon fs-5" title="Add to Playlist">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-center pe-2 text-muted-custom"><?= htmlspecialchars($song['duration']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -334,10 +351,17 @@ $songs = $songs_stmt->fetchAll();
                     <button id="btn-next" class="control-icon"><i class="bi bi-skip-end-fill"></i></button>
                 </div>
 
-                <div class="player-extra" style="width: 30%;"></div>
+                <div class="player-extra" style="width: 30%; display: flex; justify-content: flex-end; align-items: center; gap: 20px;">
+                    <button class="bg-none border-0 p-0 text-muted-custom control-icon fs-4" title="Like Song">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                    <button class="bg-none border-0 p-0 text-muted-custom control-icon fs-4" title="Add to Playlist">
+                        <i class="bi bi-plus-circle"></i>
+                    </button>
+                </div>
             </div>
         </div>
-
+        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

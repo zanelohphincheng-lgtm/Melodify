@@ -2,7 +2,9 @@
 <header class="d-flex justify-content-between align-items-center mb-4">
     <div class="position-relative w-25">
         <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-        <input type="text" class="form-control search-bar" placeholder="Searching but not working...">
+        <form action="search.php" method="GET">
+            <input type="search" name="query" class="form-control search-bar" placeholder="Search...">
+        </form>
     </div>
     <div class="auth-action-zone">
         <?php if (isset($_SESSION['user'])): ?>

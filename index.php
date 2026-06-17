@@ -298,6 +298,7 @@ $single_tracks = $stmt_singles->fetchAll();
             </div>
         </section>
 
+        
         <!-- Feedback -->
         <section class="mb-5">
             <h3 class="mb-4 fw-semibold text-secondary fs-5 text-uppercase tracking-wider">Featured Feedback <i class="bi bi-chat-heart text-secondary"></i></h3>
