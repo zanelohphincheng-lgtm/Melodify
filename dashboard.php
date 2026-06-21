@@ -150,7 +150,7 @@ require("header.php");
 
         <div class="row g-4 justify-content-center mb-5">
             
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="menu-card">
                     <div class="card-heading">Manage Music List</div>
                     <div class="icon-box">
@@ -162,7 +162,7 @@ require("header.php");
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="menu-card">
                     <div class="card-heading">Manage Artists</div>
                     <div class="icon-box">
@@ -174,7 +174,19 @@ require("header.php");
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <div class="card-heading">Manage Albums</div>
+                    <div class="icon-box">
+                        <i class="bi bi-file-earmark-music"></i>
+                    </div>
+                    <a href="manage-album.php" class="btn-access">
+                        Access
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
                 <div class="menu-card">
                     <div class="card-heading">Manage Users</div>
                     <div class="icon-box">
@@ -186,7 +198,7 @@ require("header.php");
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="menu-card">
                     <div class="card-heading">Manage Feedback</div>
                     <div class="icon-box">

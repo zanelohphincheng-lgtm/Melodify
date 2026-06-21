@@ -160,8 +160,9 @@ $songs = $stmt->fetchAll();
                 <img src="upload/logo3.png" alt="Logo" width="30" class="me-2 mb-1">
                 Manage Songs
             </div>
-            <div></div>
-            <div></div><!-- these two empty div tags are to fill in the space fullfilling the space between condition, keeping the title in the middle -->
+            <a href="manage-music-add.php" class="btn-pill-custom btn-purple-pill">
+                Add New Song <i class="bi bi-person-plus-fill"></i> <i class="bi bi-arrow-right-circle"></i>
+            </a>
         </div>
 
         <div class="management-card">
@@ -190,6 +191,9 @@ $songs = $stmt->fetchAll();
                                     <div class="d-flex justify-content-center gap-1">
                                         <a href="album.php?id=<?= $song['album_id']; ?>" class="action-box bg-box-view" title="View Song">
                                             <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="manage-music-edit.php?id=<?= $song['id']; ?>" class="action-box bg-box-edit" title="Edit Music">
+                                            <i class="bi bi-pencil"></i>
                                         </a>
                                         <a href="manage-music.php?delete_id=<?= $song['id']; ?>" 
                                            class="action-box bg-box-delete" 

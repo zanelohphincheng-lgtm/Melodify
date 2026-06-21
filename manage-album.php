@@ -1,20 +1,24 @@
 <?php
 require("header.php");
 
-// 🚫 ACTION TRIGGER: Handle artist Deletion if a delete request is fired
+// 🚫 ACTION TRIGGER: Handle album Deletion if a delete request is fired
 if(isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
-    $delete_query = "DELETE FROM artists WHERE id = :id";
-    $delete_stmt = $db->prepare($delete_query);
-    $delete_stmt->execute([':id' => $delete_id]);
-    header("Location: manage-artist.php");
+    
+    // Prevent the logged-in admin from accidentally deleting themselves!
+    if ($delete_id !== intval($_SESSION['album']['id'])) {
+        $delete_query = "DELETE FROM album WHERE id = :id";
+        $delete_stmt = $db->prepare($delete_query);
+        $delete_stmt->execute([':id' => $delete_id]);
+    }
+    header("Location: manage-albums.php");
     exit();
 }
 
-// FETCH DATA: Retrieve all current artist records ordered by newest ID first
-$query = "SELECT * FROM artists ORDER BY id DESC";
+// FETCH DATA: Retrieve all current album records ordered by newest ID first
+$query = "SELECT album.id, album.album_name, album.debut, album.created_at, album.type, artists.artist_name FROM album INNER JOIN artists ON album.artist_id = artists.id  ORDER BY id DESC";
 $stmt = $db->query($query);
-$artists = $stmt->fetchAll();
+$albums = $stmt->fetchAll();
 
 ?>
 <!DOCTYPE html>
@@ -22,7 +26,7 @@ $artists = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melodify - Manage Artists</title>
+    <title>Melodify - Manage Albums</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -61,6 +65,7 @@ $artists = $stmt->fetchAll();
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 0.5px;
+            text-align: center;
         }
 
         /* Styled Action Buttons matching your canvas mockups */
@@ -118,7 +123,7 @@ $artists = $stmt->fetchAll();
         .custom-table tbody td {
             padding: 15px 10px;
             font-size: 1.05rem;
-        }
+        }   
 
         /* Square Icon Control Buttons Grid */
         .action-box {
@@ -153,10 +158,10 @@ $artists = $stmt->fetchAll();
             </a>
             <div class="panel-title text-center">
                 <img src="upload/logo3.png" alt="Logo" width="30" class="me-2 mb-1">
-                Manage Artists
+                Manage Albums
             </div>
-            <a href="manage-artist-add.php" class="btn-pill-custom btn-purple-pill">
-                Add New Artist <i class="bi bi-person-plus-fill"></i> <i class="bi bi-arrow-right-circle"></i>
+            <a href="manage-album-add.php" class="btn-pill-custom btn-purple-pill">
+                Add New Album <i class="bi bi-person-plus-fill"></i> <i class="bi bi-arrow-right-circle"></i>
             </a>
         </div>
 
@@ -167,35 +172,35 @@ $artists = $stmt->fetchAll();
                         <tr>
                             <!-- Create spaces -->
                             <th style="width: 10%">ID</th>
-                            <th style="width: 20%">Name</th>
-                            <th style="width: 10%" class="text-center">Albums</th>
-                            <th style="width: 10%">Streams</th>
-                            <th style="width: 15%">Tourbase</th>
-                            <th style="width: 20%">Monthly Listener</th>
+                            <th style="width: 25%">Name</th>
+                            <th style="width: 15%">Artist</th>
+                            <th style="width: 15%" class="text-center">Debut</th>
+                            <th style="width: 10%" class="text-center">Type</th>
+                            <th style="width: 10%" class="text-center">UploadDate</th>
                             <th style="width: 15%" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($artists as $artist): ?>
+                        <?php foreach($albums as $album): ?>
                             <tr>
-                                <td><?= htmlspecialchars($artist['id']); ?></td>
-                                <td class="fw-semibold"><?= htmlspecialchars($artist['artist_name']); ?></td>
-                                <td class="text-white-50"><?= htmlspecialchars($artist['artist_album']); ?></td>
-                                <td class="text-white-50"><?= htmlspecialchars($artist['artist_streams']); ?></td>
-                                <td class="text-white-50"><?= htmlspecialchars($artist['artist_tourbase']); ?></td>
-                                <td class="text-white-50"><?= htmlspecialchars($artist['monthly_listener']); ?></td>
+                                <td><?= htmlspecialchars($album['id']); ?></td>
+                                <td class="fw-semibold"><?= htmlspecialchars($album['album_name']); ?></td>
+                                <td class="text-white"><?= htmlspecialchars($album['artist_name']); ?></td>
+                                <td class="text-center"><?= htmlspecialchars($album['debut']); ?></td>
+                                <td class="text-center text-uppercase"><?= htmlspecialchars($album['type']); ?></td>
+                                <td class="text-center"><?= htmlspecialchars($album['created_at']); ?></td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
-                                        <a href="artist.php?id=<?= $artist['id']; ?>" class="action-box bg-box-view" title="View Artist">
+                                        <a href="album.php?id=<?= $album['id']; ?>" class="action-box bg-box-view" title="View album">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="manage-artist-edit.php?id=<?= $artist['id']; ?>" class="action-box bg-box-edit" title="Edit Artist">
+                                        <a href="manage-album-edit.php?id=<?= $album['id']; ?>" class="action-box bg-box-edit" title="Edit album">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="manage-artist.php?delete_id=<?= $artist['id']; ?>" 
+                                        <a href="manage-music.php?delete_id=<?= $album['id']; ?>" 
                                            class="action-box bg-box-delete" 
-                                           title="Delete artist"
-                                           onclick="return confirm('Are you sure you want to completely remove <?= htmlspecialchars($artist['artist_name']); ?>? This cannot be undone.');">
+                                           title="Delete album"
+                                           onclick="return confirm('Are you sure you want to completely remove <?= htmlspecialchars($album['album_name']); ?>? This cannot be undone.');">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     </div>
