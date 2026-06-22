@@ -11,7 +11,7 @@ if(isset($_GET['delete_id'])) {
         $delete_stmt = $db->prepare($delete_query);
         $delete_stmt->execute([':id' => $delete_id]);
     }
-    header("Location: manage-songs.php");
+    header("Location: manage-music.php");
     exit();
 }
 

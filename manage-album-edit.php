@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
             <div class="panel-title text-center flex-grow-1 me-5">
                 <img src="upload/logo3.png" alt="Logo" width="32" class="me-2 mb-1">
-                Edit Album
+                Edit Album : <p class="text-info"><?= htmlspecialchars($album['album_name']); ?></p>
             </div>
         </div>
 

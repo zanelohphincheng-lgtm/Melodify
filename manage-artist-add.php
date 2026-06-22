@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="col-md-6">
                         <label class="form-label form-label-custom">Artist Albums</label>
-                        <input type="number" name="artist_album" class="form-control form-control-custom" placeholder="-" >
+                        <input type="number" name="artist_album" class="form-control form-control-custom" min="1" placeholder="-" >
                     </div>
                 </div>
 

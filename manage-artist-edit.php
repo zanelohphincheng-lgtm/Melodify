@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
             <div class="panel-title text-center flex-grow-1 me-5">
                 <img src="upload/logo3.png" alt="Logo" width="32" class="me-2 mb-1">
-                Update Artist : <span class="text-info"><?= htmlspecialchars($artist['artist_name']); ?></span>
+                Update Artist : <p class="text-info"><?= htmlspecialchars($artist['artist_name']); ?></p>
             </div>
         </div>
 
@@ -265,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class="col-md-6">
                         <label class="form-label form-label-custom">Artist Albums</label>
-                        <input type="number" name="artist_album" class="form-control form-control-custom" value="<?= htmlspecialchars($artist['artist_album']); ?>" required>
+                        <input type="number" name="artist_album" class="form-control form-control-custom" min="1" value="<?= htmlspecialchars($artist['artist_album']); ?>" required>
                     </div>
                 </div>
 
