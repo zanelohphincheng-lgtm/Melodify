@@ -28,6 +28,10 @@ try {
     $artist_list_query = "SELECT id, artist_name FROM artists ORDER BY artist_name ASC";
     $artist_list_stmt = $db->query($artist_list_query);
     $artists = $artist_list_stmt->fetchAll(PDO::FETCH_ASSOC);
+    // PDO::FETCH_ASSOC : setting instruction that tells PHP exactly how to format the data it pulls out of your MySQL database tables for a much clean array.
+    
+    // PDOException : filter that specifically listens for database-related mishaps—such as a mistyped table name, a dropped database connection, or a missing column name.
+    // $e : deep diagnostic information about the error that just happened (such as the error message, the specific line file number, and the error code).
 } catch (PDOException $e) {
     $artists = [];
 }

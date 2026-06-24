@@ -5,13 +5,11 @@ require("header.php");
 if(isset($_GET['delete_id'])) {
     $delete_id = intval($_GET['delete_id']);
     
-    // Prevent the logged-in admin from accidentally deleting themselves!
-    if ($delete_id !== intval($_SESSION['album']['id'])) {
-        $delete_query = "DELETE FROM album WHERE id = :id";
-        $delete_stmt = $db->prepare($delete_query);
-        $delete_stmt->execute([':id' => $delete_id]);
-    }
-    header("Location: manage-albums.php");
+    $delete_query = "DELETE FROM album WHERE id = :id";
+    $delete_stmt = $db->prepare($delete_query);
+    $delete_stmt->execute([':id' => $delete_id]);
+    
+    header("Location: manage-album.php");
     exit();
 }
 
@@ -197,7 +195,7 @@ $albums = $stmt->fetchAll();
                                         <a href="manage-album-edit.php?id=<?= $album['id']; ?>" class="action-box bg-box-edit" title="Edit album">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="manage-music.php?delete_id=<?= $album['id']; ?>" 
+                                        <a href="manage-album.php?delete_id=<?= $album['id']; ?>" 
                                            class="action-box bg-box-delete" 
                                            title="Delete album"
                                            onclick="return confirm('Are you sure you want to completely remove <?= htmlspecialchars($album['album_name']); ?>? This cannot be undone.');">

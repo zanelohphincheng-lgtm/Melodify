@@ -258,8 +258,7 @@ if (!empty($searchTerm)) {
 
     <!-- Top bar -->
     <div class="main-content">
-    <?php require('topbar.php') ?>
-    </style>
+        <?php require('topbar.php') ?>
 
     <div class="container">
         <h2 class="mb-4">Search Results for : <span class="text-info"><?= htmlspecialchars($searchTerm) ?></span></h2>
